@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compliance</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #081226;
+      color: white;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 270px;
+      background: #0b1730;
+      padding: 24px 18px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #60a5fa;
+      margin-bottom: 28px;
+    }
+
+    .menu-item {
+      margin-bottom: 12px;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .menu-item a {
+      display: block;
+      padding: 14px 16px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .menu-item.active,
+    .menu-item:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .main {
+      flex: 1;
+      padding: 28px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .topbar h1 {
+      font-size: 28px;
+    }
+
+    .live {
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: #0d1b36;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .card h3 {
+      font-size: 15px;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+
+    .value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 22px;
+    }
+
+    .panel {
+      background: #0d1b36;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .panel h2 {
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 14px 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    th {
+      color: #9ca3af;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    tr {
+      cursor: pointer;
+    }
+
+    tr:hover {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .ok {
+      background: rgba(16, 185, 129, 0.18);
+      color: #34d399;
+    }
+
+    .warn {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+    }
+
+    .block {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .detail-label {
+      color: #9ca3af;
+    }
+
+    .detail-value {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .check-list {
+      margin-top: 14px;
+      padding-left: 18px;
+      color: #d1d5db;
+    }
+
+    .check-list li {
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #1f2937;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .note-box {
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      color: #dbeafe;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1100px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">BankAI Risk</div>
+
+    <div class="menu-item">
+      <a href="/">Dashboard</a>
+    </div>
+
+    <div class="menu-item">
+      <a href="/risk-analytics">Risk Analytics</a>
+    </div>
+
+    <div class="menu-item">
+      <a href="/customer">Customer Drilldown</a>
+    </div>
+
+    <div class="menu-item active">
+      <a href="/compliance">Compliance</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <h1>Compliance Monitoring</h1>
+      <div class="live">● Policy checks active</div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Total Accounts Reviewed</h3>
+        <div class="value" id="reviewedCount">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Policy Safe</h3>
+        <div class="value" id="safeCount">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Warning Cases</h3>
+        <div class="value" id="warningCount">--</div>
+      </div>
+
+      <div class="card">
+        <h3>Blocked Actions</h3>
+        <div class="value" id="blockedCount">--</div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="panel">
+          <h2>Compliance Queue</h2>
+          <div style="max-height: 560px; overflow-y: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Risk Score</th>
+                  <th>Status</th>
+                  <th>Compliance</th>
+                </tr>
+              </thead>
+              <tbody id="complianceTable">
+                <tr>
+                  <td colspan="4" style="text-align:center; color:#9ca3af;">Loading compliance queue...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h2>Selected Case Review</h2>
+
+          <div class="detail-row">
+            <div class="detail-label">Customer ID</div>
+            <div class="detail-value" id="selectedCustomerId">--</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Risk Score</div>
+            <div class="detail-value" id="selectedRiskScore">--</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Status</div>
+            <div class="detail-value" id="selectedStatus">--</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Compliance Level</div>
+            <div class="detail-value" id="selectedCompliance">--</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Recommended Channel</div>
+            <div class="detail-value" id="selectedChannel">--</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">Primary Risk Driver</div>
+            <div class="detail-value" id="selectedDriver">--</div>
+          </div>
+
+          <ul class="check-list" id="complianceCheckList">
+            <li>No case selected yet</li>
+          </ul>
+
+          <div class="actions">
+            <button class="btn-primary">Approve Outreach</button>
+            <button class="btn-secondary">Flag for Review</button>
+            <button class="btn-secondary">Restrict Aggressive Action</button>
+            <button class="btn-secondary">Export Audit Note</button>
+          </div>
+
+          <div class="note-box" id="complianceNote">
+            Compliance recommendation will appear here.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <script>
+  let complianceCustomers = [];
+  let selectedComplianceIndex = 0;
+
+  function getComplianceClass(level) {
+    if (level === "SAFE") return "pill ok";
+    if (level === "WARNING") return "pill warn";
+    return "pill block";
+  }
+
+
+  function preprocessComplianceData(rows) {
+    const allRows = Array.isArray(rows) ? [...rows] : [];
+
+  
+    allRows.forEach(row => {
+      row._compliance_level = "SAFE";
+    });
+
+    const highRiskRows = allRows
+      .filter(row => String(row.status || "").trim().toUpperCase() === "HIGH RISK")
+      .sort((a, b) => Number(b.risk_score || 0) - Number(a.risk_score || 0));
+
+    const highRiskCount = highRiskRows.length;
+    const blockCutoff = Math.max(1, Math.ceil(highRiskCount * 0.15));   // top 15%
+    const warningCutoff = Math.max(blockCutoff + 1, Math.ceil(highRiskCount * 0.55)); // next ~40%
+
+    highRiskRows.forEach((row, index) => {
+      const emiLate = Number(row.emi_late_days || 0);
+      const negativeDays = Number(row.negative_balance_days || 0);
+      const overdraft = Number(row.overdraft_flag || 0);
+      const upiCount = Number(row.upi_lender_count || 0);
+
+
+      if (emiLate >= 8 || negativeDays >= 7) {
+        row._compliance_level = "BLOCK";
+        return;
+      }
+
+
+      if (index < blockCutoff) {
+        row._compliance_level = "BLOCK";
+        return;
+      }
+
+
+      if (
+        emiLate >= 2 ||
+        negativeDays > 0 ||
+        overdraft === 1 ||
+        upiCount >= 2
+      ) {
+        row._compliance_level = "WARNING";
+        return;
+      }
+
+
+      if (index < warningCutoff) {
+        row._compliance_level = "WARNING";
+        return;
+      }
+
+
+      row._compliance_level = "SAFE";
+    });
+
+    return allRows;
+  }
+
+  function getComplianceLevel(row) {
+    return row?._compliance_level || "SAFE";
+  }
+
+  function getRecommendedChannel(row) {
+    const level = getComplianceLevel(row);
+    const emiLate = Number(row.emi_late_days || 0);
+    const negativeDays = Number(row.negative_balance_days || 0);
+    const overdraft = Number(row.overdraft_flag || 0);
+    const upiCount = Number(row.upi_lender_count || 0);
+
+    if (level === "BLOCK") {
+      if (emiLate >= 8) return "Urgent Manual Review";
+      if (negativeDays >= 7) return "Compliance Hold";
+      return "Manager Review Required";
+    }
+
+    if (level === "WARNING") {
+      if (overdraft === 1 || negativeDays > 0) {
+        return "Agent Call in Allowed Window";
+      }
+      if (upiCount >= 2) {
+        return "Controlled Call + Financial Counselling";
+      }
+      return "SMS + Reminder Call";
+    }
+
+    return "Digital Reminder Only";
+  }
+
+  function buildComplianceChecks(row) {
+    const checks = [];
+
+    if ((row.emi_late_days ?? 0) >= 2) {
+      checks.push("Repayment delay behaviour is visible.");
+    }
+
+    if ((row.overdraft_flag ?? 0) == 1) {
+      checks.push("Overdraft usage detected.");
+    }
+
+    if ((row.negative_balance_days ?? 0) > 0) {
+      checks.push("Negative balance stress has been observed.");
+    }
+
+    if ((row.upi_lender_count ?? 0) >= 2) {
+      checks.push("Multiple lender-linked UPI activity detected.");
+    }
+
+    return checks.length
+      ? checks
+      : ["No major compliance concern detected for this case."];
+  }
+
+  function updateTopCards(data) {
+    const reviewed = data.length;
+    const safe = data.filter(row => getComplianceLevel(row) === "SAFE").length;
+    const warning = data.filter(row => getComplianceLevel(row) === "WARNING").length;
+    const blocked = data.filter(row => getComplianceLevel(row) === "BLOCK").length;
+
+    document.getElementById("reviewedCount").innerText = reviewed;
+    document.getElementById("safeCount").innerText = safe;
+    document.getElementById("warningCount").innerText = warning;
+    document.getElementById("blockedCount").innerText = blocked;
+  }
+
+  function renderComplianceTable(data) {
+    const table = document.getElementById("complianceTable");
+    table.innerHTML = "";
+
+    if (!data.length) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align:center; color:#9ca3af;">No compliance cases found</td>
+        </tr>
+      `;
+      return;
+    }
+
+    data.forEach((row, index) => {
+      const score = Number(row.risk_score || 0);
+      const level = getComplianceLevel(row);
+
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-index", index);
+
+      if (index === selectedComplianceIndex) {
+        tr.style.background = "#172036";
+      }
+
+      tr.innerHTML = `
+        <td>${row.customer_id ?? `CUST-${String(index + 1).padStart(3, "0")}`}</td>
+        <td>${score.toFixed(2)}</td>
+        <td>${row.status || "--"}</td>
+        <td><span class="${getComplianceClass(level)}">${level}</span></td>
+      `;
+
+      table.appendChild(tr);
+    });
+  }
+
+  function selectComplianceCustomer(index) {
+    selectedComplianceIndex = index;
+    const row = complianceCustomers[index];
+    if (!row) return;
+
+    const score = Number(row.risk_score || 0);
+    const level = getComplianceLevel(row);
+    const checks = buildComplianceChecks(row);
+
+    document.getElementById("selectedCustomerId").innerText = row.customer_id ?? "--";
+    document.getElementById("selectedRiskScore").innerText = score.toFixed(2);
+    document.getElementById("selectedStatus").innerText = row.status || "--";
+    document.getElementById("selectedCompliance").innerText = level;
+    document.getElementById("selectedChannel").innerText = getRecommendedChannel(row);
+    document.getElementById("selectedDriver").innerText = row.primary_risk_reason || "--";
+
+    document.getElementById("complianceCheckList").innerHTML =
+      checks.map(c => `<li>${c}</li>`).join("");
+
+    let note = "Outreach may proceed under standard policy controls.";
+
+    if (level === "WARNING") {
+      note = "Proceed with caution. Use reminder-first communication and avoid aggressive escalation.";
+    } else if (level === "BLOCK") {
+      note = "Direct automated collection action should be blocked. Escalate to manual compliance review.";
+    }
+
+    document.getElementById("complianceNote").innerText = note;
+
+    renderComplianceTable(complianceCustomers);
+  }
+
+  async function loadComplianceData() {
+    try {
+      const response = await fetch("/dashboard_data");
+
+      if (!response.ok) {
+        throw new Error("HTTP error: " + response.status);
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        alert("Backend error: " + data.error);
+        return;
+      }
+
+      const tableData = Array.isArray(data.table_data) ? data.table_data : [];
+
+      complianceCustomers = preprocessComplianceData(tableData).sort(
+        (a, b) => Number(b.risk_score || 0) - Number(a.risk_score || 0)
+      );
+
+      updateTopCards(complianceCustomers);
+      renderComplianceTable(complianceCustomers);
+
+      if (complianceCustomers.length > 0) {
+        selectComplianceCustomer(0);
+      }
+    } catch (error) {
+      console.error("Compliance load error:", error);
+      alert("Could not load compliance data.");
+    }
+  }
+
+  document.addEventListener("click", function (e) {
+    const tr = e.target.closest("tr[data-index]");
+    if (!tr) return;
+
+    const index = Number(tr.getAttribute("data-index"));
+    selectComplianceCustomer(index);
+  });
+
+  window.addEventListener("load", function () {
+    loadComplianceData();
+  });
+</script>
+</body>
+</html>

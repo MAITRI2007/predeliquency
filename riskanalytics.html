@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Risk Analytics Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0b1020;
+      color: #e5e7eb;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #111827;
+      padding: 24px 16px;
+      border-right: 1px solid #1f2937;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 32px;
+      color: #60a5fa;
+    }
+
+    .menu-item {
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      color: #d1d5db;
+    }
+
+    .menu-item.active {
+      background: #1f2937;
+    }
+
+    .main {
+      flex: 1;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .topbar h1 {
+      font-size: 28px;
+    }
+
+    .live {
+      color: #34d399;
+      font-size: 14px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .card h3 {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .card .value {
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .panel h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #1f2937;
+      color: #e5e7eb;
+      border: 1px solid #374151;
+    }
+
+    button.active-filter {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+    }
+
+    .bar-group {
+      margin-bottom: 16px;
+    }
+
+    .bar-label-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 14px;
+      background: #0f172a;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #1f2937;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .bar-high { background: #ef4444; }
+    .bar-medium { background: #f59e0b; }
+    .bar-low { background: #22c55e; }
+
+    .insight-list {
+      list-style: none;
+    }
+
+    .insight-list li {
+      background: #0f172a;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #1f2937;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid #1f2937;
+      font-size: 14px;
+    }
+
+    th {
+      color: #9ca3af;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      background: #111827;
+    }
+
+    tr:hover {
+      background: #0f172a;
+    }
+
+    .table-wrap {
+      max-height: 420px;
+      overflow-y: auto;
+      border-radius: 10px;
+    }
+
+    .badge {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .high {
+      background: rgba(239, 68, 68, 0.18);
+      color: #f87171;
+    }
+
+    .medium {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+    }
+
+    .low {
+      background: rgba(34, 197, 94, 0.18);
+      color: #4ade80;
+    }
+
+    .priority-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .priority-item {
+      background: #0f172a;
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .priority-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .priority-id {
+      font-weight: bold;
+    }
+
+    .priority-score {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 1200px) {
+      .cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">BankAI Risk</div>
+    <div class="menu-item"><a href="/index">Dashboard</a></div>
+    <div class="menu-item active"><a href="/riskanalytics.html">Risk Analytics</a></div>
+    <div class="menu-item"><a href="\customer">Customer Drilldown</a></div>
+    <div class="menu-item"><a href="\compliance">Compliance</a></div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <h1>Risk Analytics</h1>
+      <div class="live">● Dataset Connected</div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Total Customers</h3>
+        <div class="value" id="totalCustomers">--</div>
+      </div>
+      <div class="card">
+        <h3>High Risk Customers</h3>
+        <div class="value" id="highRiskCount">--</div>
+      </div>
+      <div class="card">
+        <h3>Medium Risk Customers</h3>
+        <div class="value" id="mediumRiskCount">--</div>
+      </div>
+      <div class="card">
+        <h3>Low Risk Customers</h3>
+        <div class="value" id="lowRiskCount">--</div>
+      </div>
+      <div class="card">
+        <h3>Average Risk Score</h3>
+        <div class="value" id="avgRiskScore">--</div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <div class="panel">
+          <h2>Customer Risk Table</h2>
+
+          <div class="filter-row">
+            <button class="active-filter" onclick="applyFilter('ALL', this)">All</button>
+            <button onclick="applyFilter('HIGH RISK', this)">High Risk</button>
+            <button onclick="applyFilter('MEDIUM RISK', this)">Medium Risk</button>
+            <button onclick="applyFilter('LOW RISK', this)">Low Risk</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Risk Score</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody id="customerTable">
+                <tr>
+                  <td colspan="4" style="text-align:center; color:#9ca3af;">Loading analytics...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Priority Queue (Top 10 Riskiest Customers)</h2>
+          <div class="priority-box" id="priorityQueue">
+            <div style="color:#9ca3af;">Loading priority queue...</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="panel">
+          <h2>Risk Distribution</h2>
+
+          <div class="bar-group">
+            <div class="bar-label-row">
+              <span>High Risk</span>
+              <span id="highPercent">0%</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill bar-high" id="highBar" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="bar-group">
+            <div class="bar-label-row">
+              <span>Medium Risk</span>
+              <span id="mediumPercent">0%</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill bar-medium" id="mediumBar" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="bar-group">
+            <div class="bar-label-row">
+              <span>Low Risk</span>
+              <span id="lowPercent">0%</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill bar-low" id="lowBar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Top Risk Drivers</h2>
+          <ul class="insight-list" id="driversList">
+            <li>Loading drivers...</li>
+          </ul>
+        </div>
+
+        <div class="panel">
+          <h2>Analytics Summary</h2>
+          <ul class="insight-list" id="summaryList">
+            <li>Loading summary...</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <script>
+  let allCustomers = [];
+  let filteredCustomers = [];
+
+  function getBadgeClass(status) {
+    if (status === "HIGH RISK") return "badge high";
+    if (status === "MEDIUM RISK") return "badge medium";
+    return "badge low";
+  }
+
+  function getPriorityLabel(score, status) {
+    if (status === "HIGH RISK" && score >= 0.8) return "Immediate";
+    if (status === "HIGH RISK") return "Urgent";
+    if (status === "MEDIUM RISK") return "Watchlist";
+    return "Stable";
+  }
+
+  function normalizeToLatestCustomers(data) {
+    if (!Array.isArray(data)) return [];
+
+    const latestMap = new Map();
+
+    data.forEach((row, index) => {
+      const customerId = row.customer_id ?? `UNKNOWN-${index}`;
+      const currentMonth = String(row.year_month || "");
+
+      if (!latestMap.has(customerId)) {
+        latestMap.set(customerId, row);
+      } else {
+        const existing = latestMap.get(customerId);
+        const existingMonth = String(existing.year_month || "");
+
+        if (currentMonth >= existingMonth) {
+          latestMap.set(customerId, row);
+        }
+      }
+    });
+
+    return Array.from(latestMap.values()).map((row, index) => ({
+      ...row,
+      customer_label: row.customer_id ? String(row.customer_id) : `CUST-${String(index + 1).padStart(3, "0")}`
+    }));
+  }
+
+  async function loadAnalytics() {
+    try {
+      const response = await fetch("/load_data");
+      const data = await response.json();
+
+      if (data.error) {
+        alert("Backend error: " + data.error);
+        return;
+      }
+
+     
+      allCustomers = normalizeToLatestCustomers(data);
+      filteredCustomers = [...allCustomers];
+
+      updateCards(allCustomers);
+      renderTable(filteredCustomers);
+      renderDistribution(allCustomers);
+      renderPriorityQueue(allCustomers);
+      renderDrivers(allCustomers);
+      renderSummary(allCustomers);
+    } catch (error) {
+      console.error(error);
+      alert("Could not load risk analytics data.");
+    }
+  }
+
+  function updateCards(data) {
+    const total = data.length;
+    const high = data.filter(x => x.status === "HIGH RISK").length;
+    const medium = data.filter(x => x.status === "MEDIUM RISK").length;
+    const low = data.filter(x => x.status === "LOW RISK").length;
+
+    let avg = 0;
+    if (total > 0) {
+      avg = data.reduce((sum, row) => sum + Number(row.risk_score || 0), 0) / total;
+    }
+
+    document.getElementById("totalCustomers").innerText = total;
+    document.getElementById("highRiskCount").innerText = high;
+    document.getElementById("mediumRiskCount").innerText = medium;
+    document.getElementById("lowRiskCount").innerText = low;
+    document.getElementById("avgRiskScore").innerText = avg.toFixed(2);
+  }
+
+  function renderTable(data) {
+    const table = document.getElementById("customerTable");
+    table.innerHTML = "";
+
+    if (!data.length) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="4" style="text-align:center; color:#9ca3af;">No customers found</td>
+        </tr>
+      `;
+      return;
+    }
+
+    data.forEach(row => {
+      const score = Number(row.risk_score || 0);
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${row.customer_label}</td>
+        <td>${score.toFixed(2)}</td>
+        <td><span class="${getBadgeClass(row.status)}">${row.status}</span></td>
+        <td>${getPriorityLabel(score, row.status)}</td>
+      `;
+
+      table.appendChild(tr);
+    });
+  }
+
+  function renderDistribution(data) {
+    const total = data.length || 1;
+    const high = data.filter(x => x.status === "HIGH RISK").length;
+    const medium = data.filter(x => x.status === "MEDIUM RISK").length;
+    const low = data.filter(x => x.status === "LOW RISK").length;
+
+    const highPct = ((high / total) * 100).toFixed(1);
+    const mediumPct = ((medium / total) * 100).toFixed(1);
+    const lowPct = ((low / total) * 100).toFixed(1);
+
+    document.getElementById("highPercent").innerText = `${highPct}%`;
+    document.getElementById("mediumPercent").innerText = `${mediumPct}%`;
+    document.getElementById("lowPercent").innerText = `${lowPct}%`;
+
+    document.getElementById("highBar").style.width = `${highPct}%`;
+    document.getElementById("mediumBar").style.width = `${mediumPct}%`;
+    document.getElementById("lowBar").style.width = `${lowPct}%`;
+  }
+
+  function renderPriorityQueue(data) {
+    const box = document.getElementById("priorityQueue");
+    box.innerHTML = "";
+
+    const sorted = [...data]
+      .sort((a, b) => Number(b.risk_score || 0) - Number(a.risk_score || 0))
+      .slice(0, 10);
+
+    if (!sorted.length) {
+      box.innerHTML = `<div style="color:#9ca3af;">No customers found</div>`;
+      return;
+    }
+
+    sorted.forEach(row => {
+      const score = Number(row.risk_score || 0);
+
+      const div = document.createElement("div");
+      div.className = "priority-item";
+      div.innerHTML = `
+        <div class="priority-left">
+          <div class="priority-id">${row.customer_label}</div>
+          <div><span class="${getBadgeClass(row.status)}">${row.status}</span></div>
+        </div>
+        <div class="priority-score">${score.toFixed(2)}</div>
+      `;
+      box.appendChild(div);
+    });
+  }
+
+  function renderDrivers(data) {
+    const driversList = document.getElementById("driversList");
+
+    let counts = {
+      salaryDelay: 0,
+      utilityDelay: 0,
+      emiDelay: 0,
+      spendChange: 0,
+      atmSpike: 0,
+      lenderUPI: 0
+    };
+      
+
+    data.forEach(row => {
+      if ((row.salary_delay_vs_norm ?? 0) > 2) counts.salaryDelay++;
+      if ((row.utility_payment_delay_days ?? 0) > 5) counts.utilityDelay++;
+      if ((row.emi_late_days ?? 0) > 5) counts.emiDelay++;
+      if ((row.atm_withdrawal_spike ?? 0) ==1) counts.atmSpike++;
+      //if ((row.upi_lender_count ?? 0) > 2) counts.lenderUPI++;
+      //if ((row.negative_balance_days ?? 0  ) > 0) negativeBalance++;
+     
+
+    });
+
+    const driverItems = [
+      { label: "Frequent EMI delays", count: counts.emiDelay },
+      { label: "Utility payment delays", count: counts.utilityDelay },
+      { label: "Salary delay patterns", count: counts.salaryDelay },
+      { label: "ATM withdrawal spikes", count: counts.atmSpike },
+      //{ label: "Multiple lender-linked UPI transactions", count: counts.lenderUPI }
+    ];
+
+    driverItems.sort((a, b) => b.count - a.count);
+
+    driversList.innerHTML = driverItems
+      .slice(0, 5)
+      .map(item => `<li>${item.label} — affected customers: <b>${item.count}</b></li>`)
+      .join("");
+  }
+
+  function renderSummary(data) {
+    const summaryList = document.getElementById("summaryList");
+
+    const total = data.length || 1;
+    const high = data.filter(x => x.status === "HIGH RISK").length;
+    const medium = data.filter(x => x.status === "MEDIUM RISK").length;
+    const low = data.filter(x => x.status === "LOW RISK").length;
+
+    const sorted = [...data].sort((a, b) => Number(b.risk_score || 0) - Number(a.risk_score || 0));
+    const topCustomer = sorted[0];
+
+    summaryList.innerHTML = `
+      <li>${((high / total) * 100).toFixed(1)}% of customers fall in the High Risk segment.</li>
+      <li>${((medium / total) * 100).toFixed(1)}% of customers are in the Medium Risk segment.</li>
+      <li>${((low / total) * 100).toFixed(1)}% of customers currently remain in the Low Risk segment.</li>
+      <li>Highest observed risk score: <b>${topCustomer ? Number(topCustomer.risk_score).toFixed(2) : "--"}</b>.</li>
+      <li>Priority outreach should begin with the top 10 high-scoring customers shown in the queue.</li>
+    `;
+  }
+
+  function applyFilter(status, button) {
+    document.querySelectorAll(".filter-row button").forEach(btn => {
+      btn.classList.remove("active-filter");
+    });
+    button.classList.add("active-filter");
+
+    if (status === "ALL") {
+      filteredCustomers = [...allCustomers];
+    } else {
+      filteredCustomers = allCustomers.filter(row => row.status === status);
+    }
+
+    renderTable(filteredCustomers);
+  }
+
+  window.addEventListener("load", loadAnalytics);
+</script>
