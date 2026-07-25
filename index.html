@@ -462,7 +462,7 @@
 
     async function loadDashboardData() {
       try {
-        const response = await fetch("/dashboard_data");
+        const response = await fetch("dashboard_data.json");
         const data = await response.json();
 
         if (data.error) {
