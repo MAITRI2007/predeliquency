@@ -243,24 +243,24 @@
 </head>
 <body>
   <div class="sidebar">
-    <div class="logo">ShieldAi</div>
+    <div class="logo">BankAi Risk</div>
 
     <div class="menu-item active">
       <a href="/">Dashboard</a>
     </div>
 
     <div class="menu-item">
-      <a href="riskanalytics.html">Risk Analytics</a>
+      <a href="/risk-analytics">Risk Analytics</a>
     </div>
 
     <div class="menu-item">
-      <a href="customer.html">Customer Drilldown</a>
+      <a href="/customer">Customer Drilldown</a>
     </div>
 
     
 
     <div class="menu-item">
-      <a href="compliance.html">Compliance</a>
+      <a href="/compliance">Compliance</a>
     </div>
   </div>
 
@@ -462,7 +462,7 @@
 
     async function loadDashboardData() {
       try {
-        const response = await fetch("dashboard_data.json");
+        const response = await fetch("/dashboard_data");
         const data = await response.json();
 
         if (data.error) {
