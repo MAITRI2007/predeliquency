@@ -583,7 +583,7 @@
 
   async function loadComplianceData() {
     try {
-      const response = await fetch("dashboard_data.json");
+      const response = await fetch("/dashboard_data");
 
       if (!response.ok) {
         throw new Error("HTTP error: " + response.status);
